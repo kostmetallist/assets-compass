@@ -56,6 +56,6 @@ user = Table(
     Column(
         'role_id',
         Integer,
-        ForeignKey(role.id)
+        ForeignKey('role.id')
     )
 )
