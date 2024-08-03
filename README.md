@@ -2,7 +2,9 @@
 
 Tracker for financial data.
 
-![assets-compass-logo](./assets/logo.png)
+<p align="center">
+  <img width="85%" src="./assets/logo.png" />
+</p>
 
 ## Run Instructions
 
@@ -20,6 +22,15 @@ DB_PASS=<set_password>
 
 ```shell
 docker-compose up
+```
+
+GUI for DBMS is available at port `5433`. To connect to the database,
+fill in all the details from `.env`, and use `host.docker.internal` as the host.
+
+### Migrations
+
+```shell
+alembic upgrade head
 ```
 
 ### Web Application
