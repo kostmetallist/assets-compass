@@ -1,8 +1,28 @@
-# assets-compass
+# Assets Compass
 
 Tracker for financial data.
 
+![assets-compass-logo](./assets/logo.png)
+
 ## Run Instructions
+
+### Configuration
+
+Make sure the root directory contains file named `.env` with all variables initialized:
+
+```shell
+DB_USER=<set_username>
+DB_PASS=<set_password>
+...
+```
+
+### Database
+
+```shell
+docker-compose up
+```
+
+### Web Application
 
 ```shell
 poetry shell
