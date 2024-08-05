@@ -2,7 +2,7 @@ from enum import Enum
 from datetime import datetime
 from typing import List, Optional
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, status, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationError
 from fastapi.responses import JSONResponse
@@ -57,7 +57,7 @@ class Degree(BaseModel):
     date_approval: datetime
 
 
-class User(BaseModel):
+class FakeUser(BaseModel):
     id: int
     role: str
     name: str
@@ -91,13 +91,16 @@ fake_users = [
 ]
 
 
-@app.get('/users/{user_id}', response_model=List[User])
-def get_user(user_id: int):
+current_user = fastapi_users.current_user()
+
+
+@app.get('/users/{user_id}', response_model=List[FakeUser])
+def get_user(user_id: int, cur_user: User = Depends(current_user)):
     return [user for user in fake_users if user['id'] == user_id]
 
 
 @app.post('/users/{user_id}')
-def change_user_name(user_id: int, new_name: str):
+def change_user_name(user_id: int, new_name: str, cur_user: User = Depends(current_user)):
     existing = [user for user in fake_users if user['id'] == user_id][0]
     existing['name'] = new_name
     return {'status': 'OK'}
