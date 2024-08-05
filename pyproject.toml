@@ -12,6 +12,8 @@ fastapi = {extras = ["all"], version = "^0.99.0"}
 SQLAlchemy = "^2.0.31"
 alembic = "^1.13.2"
 psycopg2 = "^2.9.9"
+fastapi-users = {extras = ["sqlalchemy"], version = "^13.0.0"}
+asyncpg = "^0.29.0"
 
 [build-system]
 requires = ["poetry-core"]
