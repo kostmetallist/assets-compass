@@ -23,7 +23,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     email = Column(String, nullable=False)
     username = Column(String, nullable=False)
     hashed_password = Column(String(length=1024), nullable=False)
-    registered_at = Column(TIMESTAMP, default=partial(datetime.now, UTC))
+    registered_at = Column(TIMESTAMP(timezone=True), default=partial(datetime.now, UTC))
     role_id = Column(Integer, ForeignKey(role.c.id))
     is_active = Column(Boolean, default=True, nullable=False)
     is_superuser = Column(Boolean, default=False, nullable=False)

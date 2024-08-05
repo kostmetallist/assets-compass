@@ -50,7 +50,7 @@ user = Table(
     ),
     Column(
         'registered_at',
-        TIMESTAMP,
+        TIMESTAMP(timezone=True),
         default=partial(datetime.now, UTC)
     ),
     Column(
