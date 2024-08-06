@@ -6,22 +6,15 @@ from fastapi import FastAPI, Request, status, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationError
 from fastapi.responses import JSONResponse
-from fastapi_users import FastAPIUsers
 from pydantic import BaseModel, Field
 
-from auth.auth import auth_backend
-from auth.database import User
-from auth.manager import get_user_manager
-from auth.schemas import UserCreate, UserRead
+from src.auth.base_config import auth_backend, fastapi_users
+from src.auth.models import User
+from src.auth.schemas import UserCreate, UserRead
 
 
 app = FastAPI(
     title='Assets Compass'
-)
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend]
 )
 
 app.include_router(

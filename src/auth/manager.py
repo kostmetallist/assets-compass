@@ -3,8 +3,9 @@ from typing import Optional, override
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, models, schemas
 
-from config import USER_MANAGER_SECRET
-from auth.database import User, get_user_db
+from src.auth.utils import get_user_db
+from src.auth.models import User
+from src.config import USER_MANAGER_SECRET
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
