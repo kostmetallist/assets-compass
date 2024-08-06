@@ -3,7 +3,7 @@
 Tracker for financial data.
 
 <p align="center">
-  <img width="85%" src="./assets/logo.png" />
+  <img width="45%" src="./assets/logo.png" />
 </p>
 
 ## Run Instructions
@@ -37,7 +37,7 @@ alembic upgrade head
 
 ```shell
 poetry shell
-uvicorn main:app --reload
+uvicorn src.main:app --reload
 ```
 
 ## Usage
