@@ -18,7 +18,7 @@ async def get_specific_operation(type_: str, session: AsyncSession = Depends(get
 
     query = select(operation).where(operation.c.type == type_)
     result = await session.execute(query)
-    return result.all()
+    return result.mappings().all()
 
 
 @router.post('/')
