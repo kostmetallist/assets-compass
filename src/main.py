@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 from src.auth.base_config import auth_backend, fastapi_users
 from src.auth.models import User
 from src.auth.schemas import UserCreate, UserRead
+from src.operations.router import router as router_operations
 
 
 app = FastAPI(
@@ -28,6 +29,8 @@ app.include_router(
     prefix='/auth',
     tags=['auth']
 )
+
+app.include_router(router_operations)
 
 
 @app.exception_handler(ValidationError)
