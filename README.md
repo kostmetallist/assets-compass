@@ -33,6 +33,11 @@ fill in all the details from `.env`, and use `host.docker.internal` as the host.
 alembic upgrade head
 ```
 
+### Redis
+
+For windows, use https://github.com/tporadowski/redis/releases/tag/v5.0.14.1.
+Launch `redis-server.exe`.
+
 ### Web Application
 
 ```shell

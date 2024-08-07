@@ -1,21 +1,28 @@
 from enum import Enum
 from datetime import datetime
+from time import sleep
 from typing import List, Optional
 
 from fastapi import FastAPI, Request, status, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationError
 from fastapi.responses import JSONResponse
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
 from pydantic import BaseModel, Field
+from redis import asyncio as aioredis
 
 from src.auth.base_config import auth_backend, fastapi_users
 from src.auth.models import User
 from src.auth.schemas import UserCreate, UserRead
 from src.operations.router import router as router_operations
 
+APP_NAME = 'Assets Compass'
+
 
 app = FastAPI(
-    title='Assets Compass'
+    title=APP_NAME
 )
 
 app.include_router(
@@ -31,6 +38,12 @@ app.include_router(
 )
 
 app.include_router(router_operations)
+
+
+@app.on_event('startup')
+async def startup_event_handler():
+    redis = aioredis.from_url('redis://localhost', encoding='utf8')
+    FastAPICache.init(RedisBackend(redis), prefix=f'{APP_NAME.lower().replace(' ', '-')}-$')
 
 
 @app.exception_handler(ValidationError)
@@ -132,5 +145,8 @@ def add_trades(trades: List[Trade]):
 
 
 @app.get('/')
+@cache(expire=15)
 def hello():
+    # Emulating long operation
+    sleep(2)
     return 'hello world'
