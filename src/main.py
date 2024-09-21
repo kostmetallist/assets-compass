@@ -16,6 +16,7 @@ from redis import asyncio as aioredis
 from src.auth.base_config import auth_backend, fastapi_users
 from src.auth.models import User
 from src.auth.schemas import UserCreate, UserRead
+from src.config import REDIS_PORT
 from src.operations.router import router as router_operations
 
 APP_NAME = 'Assets Compass'
@@ -42,7 +43,7 @@ app.include_router(router_operations)
 
 @app.on_event('startup')
 async def startup_event_handler():
-    redis = aioredis.from_url('redis://localhost', encoding='utf8')
+    redis = aioredis.from_url('redis://localhost', encoding='utf8', port=int(REDIS_PORT))
     FastAPICache.init(RedisBackend(redis), prefix=f'{APP_NAME.lower().replace(' ', '-')}-$')
 
 

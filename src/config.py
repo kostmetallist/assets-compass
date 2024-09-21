@@ -12,3 +12,5 @@ DB_NAME = os.environ.get('DB_NAME')
 
 JWT_SECRET = os.environ.get('JWT_SECRET')
 USER_MANAGER_SECRET = os.environ.get('USER_MANAGER_SECRET')
+
+REDIS_PORT = os.environ.get('REDIS_PORT')

@@ -60,9 +60,40 @@ services:
     networks:
       - main
 
+  redis:
+    env_file: .env
+    image: redis:7.4.0-alpine3.20
+    container_name: assets-compass-redis
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_USER: "${REDIS_USER}"
+      REDIS_USER_PASSWORD: "${REDIS_USER_PASSWORD}"
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_backup:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+
 volumes:
   local_db_storage:
   local_pgadmin_storage:
+  redis_backup:
 
 networks:
   main:
