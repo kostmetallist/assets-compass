@@ -18,11 +18,13 @@ DB_PASS=<set_password>
 ...
 ```
 
-### Database
+### Services
 
 ```shell
 docker-compose up
 ```
+
+#### Database
 
 GUI for DBMS is available at port `5433`. To connect to the database,
 fill in all the details from `.env`, and use `host.docker.internal` as the host.
@@ -33,10 +35,21 @@ fill in all the details from `.env`, and use `host.docker.internal` as the host.
 alembic upgrade head
 ```
 
-### Redis
+### Celery
 
-For windows, use https://github.com/tporadowski/redis/releases/tag/v5.0.14.1.
-Launch `redis-server.exe`.
+To start the worker instance:
+
+```shell
+celery -A src.tasks.tasks:celery worker --loglevel=INFO --pool=solo
+```
+
+To enable a web interface for background tasks:
+
+```
+celery -A src.tasks.tasks:celery flower
+```
+
+By default, the dashboard is accessible on `localhost:5555`.
 
 ### Web Application
 
