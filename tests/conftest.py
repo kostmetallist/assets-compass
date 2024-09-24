@@ -40,12 +40,6 @@ async def prepare_database():
         await conn.run_sync(metadata.drop_all)
 
 
-@pytest_asyncio.fixture(scope='session')
-async def prepare_something():
-    await asyncio.sleep(1)
-    return 42
-
-
 # SETUP
 @pytest.fixture(scope='session')
 def event_loop(request):
