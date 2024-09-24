@@ -1,10 +1,10 @@
 version: "3.8"
 services:
 
-  postgres:
+  postgres_prod:
     env_file: .env
     image: postgres:14.10-alpine3.19
-    container_name: assets-compass-postgres
+    container_name: assets-compass-postgres-prod
     command:
       - "postgres"
       - "-c"
@@ -22,7 +22,7 @@ services:
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - ./db/init_scripts:/docker-entrypoint-initdb.d
-      - local_db_storage:/var/lib/postgresql/data
+      - local_db_prod_storage:/var/lib/postgresql/data
     ports:
       - "${DB_PORT}:5432"
     healthcheck:
@@ -37,6 +37,45 @@ services:
         limits:
           cpus: '1'
           memory: 2G
+    networks:
+      - main
+
+  postgres_test:
+    env_file: .env
+    image: postgres:14.10-alpine3.19
+    container_name: assets-compass-postgres-test
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=10"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+    environment:
+      POSTGRES_DB: "${DB_TEST_NAME}"
+      POSTGRES_USER: "${DB_TEST_USER}"
+      POSTGRES_PASSWORD: "${DB_TEST_PASS}"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./db/init_scripts:/docker-entrypoint-initdb.d
+      - local_db_test_storage:/var/lib/postgresql/data
+    ports:
+      - "${DB_TEST_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_TEST_USER} -d ${DB_TEST_NAME}"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: on-failure:2
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
     networks:
       - main
 
@@ -91,7 +130,8 @@ services:
     stdin_open: true
 
 volumes:
-  local_db_storage:
+  local_db_prod_storage:
+  local_db_test_storage:
   local_pgadmin_storage:
   redis_backup:
 

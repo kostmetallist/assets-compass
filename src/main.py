@@ -1,5 +1,5 @@
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, UTC
 from time import sleep
 from typing import List, Optional
 
@@ -97,7 +97,7 @@ fake_users = [
         'name': 'Ferdinand',
         'degree': {
             'rank': Rank.rookie,
-            'date_approval': datetime.utcnow(),
+            'date_approval': datetime.now(UTC),
         },
     },
 ]
