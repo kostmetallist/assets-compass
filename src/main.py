@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request, status, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationError
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
@@ -18,6 +19,7 @@ from src.auth.models import User
 from src.auth.schemas import UserCreate, UserRead
 from src.config import REDIS_PORT
 from src.operations.router import router as router_operations
+from src.pages.router import router as router_pages
 from src.tasks.router import router as router_tasks
 
 APP_NAME = 'Assets Compass'
@@ -26,6 +28,8 @@ APP_NAME = 'Assets Compass'
 app = FastAPI(
     title=APP_NAME
 )
+
+app.mount('/static', StaticFiles(directory='src/static'), name='static')
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
@@ -40,6 +44,7 @@ app.include_router(
 )
 
 app.include_router(router_operations)
+app.include_router(router_pages)
 app.include_router(router_tasks)
 
 
