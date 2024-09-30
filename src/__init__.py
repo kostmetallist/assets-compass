@@ -1,1 +1,1 @@
-from database import metadata
+from .database import metadata
