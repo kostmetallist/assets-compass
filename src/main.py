@@ -18,6 +18,7 @@ from src.auth.base_config import auth_backend, fastapi_users
 from src.auth.models import User
 from src.auth.schemas import UserCreate, UserRead
 from src.config import REDIS_PORT
+from src.chat.router import router as router_chat
 from src.operations.router import router as router_operations
 from src.pages.router import router as router_pages
 from src.tasks.router import router as router_tasks
@@ -43,6 +44,7 @@ app.include_router(
     tags=['auth']
 )
 
+app.include_router(router_chat)
 app.include_router(router_operations)
 app.include_router(router_pages)
 app.include_router(router_tasks)
