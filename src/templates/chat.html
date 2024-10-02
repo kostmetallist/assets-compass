@@ -22,11 +22,11 @@
 
     getLastMessages()
         .then(messages => {
-            appendMessage("Предыдущие 5 сообщений:")
-            messages.forEach(msg => {
-                appendMessage(msg.message)
+            appendMessage("Last 5 messages:")
+            messages.reverse().forEach(msg => {
+                appendMessage(msg.body)
             })
-            appendMessage("\nНовые сообщения:")
+            appendMessage("\nNew messages:")
         })
 
     function appendMessage(msg) {

@@ -1,5 +1,10 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+from sqlalchemy import insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
+
+from src.database import async_session_maker, get_async_session
+from .models import Message
 
 router = APIRouter(
     prefix='/chat',
@@ -21,12 +26,31 @@ class ConnectionManager:
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str):
+    async def broadcast(self, message: str, project_to_db=True):
+        if project_to_db:
+            await self.add_messages_to_db(message)
         for connection in self.active_connections:
             await connection.send_text(message)
 
+    @staticmethod
+    async def add_messages_to_db(message_body: str):
+        async with async_session_maker() as session:
+            stmt = insert(Message).values(
+                body=message_body
+            )
+
+            await session.execute(stmt)
+            await session.commit()
+
 
 manager = ConnectionManager()
+
+
+@router.get('/last_messages')
+async def get_last_messages(session: AsyncSession = Depends(get_async_session)):
+    query = select(Message).order_by(Message.id.desc()).limit(5)
+    messages = await session.execute(query)
+    return messages.scalars().all()
 
 
 @router.websocket("/ws/{client_id}")
@@ -38,4 +62,5 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
             await manager.broadcast(f"Client #{client_id} says: {data}")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        await manager.broadcast(f"Client #{client_id} left the chat")
+        await manager.broadcast(f"Client #{client_id} left the chat",
+                                project_to_db=False)
