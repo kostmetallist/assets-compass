@@ -129,6 +129,44 @@ services:
     tty: true
     stdin_open: true
 
+  fastapi:
+    build:
+      context: .
+    env_file: .env
+    container_name: assets-compass-fastapi
+    command: ["/fastapi/docker/app.sh"]
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres_prod
+      - redis
+    networks:
+      - main
+
+  celery:
+    build:
+      context: .
+    env_file: .env
+    container_name: assets-compass-celery
+    command: ["/fastapi/docker/celery.sh", "celery"]
+    depends_on:
+      - redis
+    networks:
+      - main
+  
+  flower:
+    build:
+      context: .
+    env_file: .env
+    container_name: assets-compass-flower
+    command: ["/fastapi/docker/celery.sh", "flower"]
+    ports:
+      - 5555:5555
+    depends_on:
+      - celery
+    networks:
+      - main
+
 volumes:
   local_db_prod_storage:
   local_db_test_storage:

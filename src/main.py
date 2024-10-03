@@ -17,7 +17,7 @@ from redis import asyncio as aioredis
 from src.auth.base_config import auth_backend, fastapi_users
 from src.auth.models import User
 from src.auth.schemas import UserCreate, UserRead
-from src.config import REDIS_PORT
+from src.config import REDIS_HOST, REDIS_PORT
 from src.chat.router import router as router_chat
 from src.operations.router import router as router_operations
 from src.pages.router import router as router_pages
@@ -52,7 +52,7 @@ app.include_router(router_tasks)
 
 @app.on_event('startup')
 async def startup_event_handler():
-    redis = aioredis.from_url('redis://localhost', encoding='utf8', port=int(REDIS_PORT))
+    redis = aioredis.from_url(f'redis://{REDIS_HOST}:{REDIS_PORT}', encoding='utf8', port=int(REDIS_PORT))
     FastAPICache.init(RedisBackend(redis), prefix=f'{APP_NAME.lower().replace(' ', '-')}-$')
 
 

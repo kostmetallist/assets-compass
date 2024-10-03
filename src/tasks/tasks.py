@@ -2,9 +2,9 @@ import time
 
 from celery import Celery
 
-from src.config import REDIS_PORT
+from src.config import REDIS_HOST, REDIS_PORT
 
-celery = Celery('bg-tasks', broker=f'redis://localhost:{REDIS_PORT}')
+celery = Celery('bg-tasks', broker=f'redis://{REDIS_HOST}:{REDIS_PORT}')
 
 
 @celery.task
